@@ -1,6 +1,5 @@
-let input = document.querySelector(".input");
-let input_field = input.children[0];
-let input_button = input.children[1];
+let input_field = document.querySelector(".input").children[0];
+let input_button = document.querySelector(".input").children[1];
 
 let list = document.querySelector(".main__list");
 
@@ -19,7 +18,7 @@ let storage = {
 		this.entries = data;
 	},
 };
-Object.defineProperty(storage, 'entries', {
+Object.defineProperty(storage, "entries", {
 	get() {
 		let data = [];
 		if (localStorage.entries) {
@@ -33,7 +32,17 @@ Object.defineProperty(storage, 'entries', {
 	},
 });
 
-input_button.addEventListener("click", _ => {
+input_button.addEventListener("click", addItem);
+
+function handleInputSubmit(event) {
+	if (event.keyCode != 13) return;
+
+	addItem();
+}
+
+function addItem(event) {
+	if (!input_field.value) return;
+
 	let li = document.createElement("li");
 	li.textContent = input_field.value;
 	input_field.value = "";
@@ -47,7 +56,7 @@ input_button.addEventListener("click", _ => {
 	list.append(li);
 
 	updateCounter();
-});
+}
 
 list.addEventListener("click", event => {
 	let target = event.target;
