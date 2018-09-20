@@ -1,3 +1,39 @@
+:root {
+	--facade-color: snow;
+	--canvas-color: seashell;
+	--border-color: salmon;
+	--shadow-color: firebrick;
+	--bg-color: cornsilk;
+	/* color:  */
+}
+
+body {
+	background-color: var(--bg-color);
+}
+
+button {
+	/* padding: 0; */
+	border: 1px solid var(--border-color);
+	font: inherit;
+	/* color: inherit; */
+	background-color: transparent;
+	cursor: pointer;
+}
+
+button:hover {
+	background-color: var(--facade-color);
+}
+
+input {
+	font-size: 1.1rem;
+	padding: 14px;
+	border: none;
+	background-color: transparent;
+}
+input:focus {
+	background-color: var(--facade-color);
+}
+
 .container {
 	padding: 80px 20px;
 	display: grid;
@@ -8,10 +44,11 @@
 }
 
 .container > div {
-	border: 1px solid salmon;
-	background-color: seashell;
+	border: 2px solid var(--border-color);
+	background-color: var(--canvas-color);
 	display: grid;
 	grid-auto-columns: 100%;
+	box-shadow: 0px 6px 10px 2px var(--shadow-color);
 }
 
 .footer {
@@ -24,8 +61,10 @@
 }
 
 .main__list li {
+	font-size: 1.1rem;
 	padding: 10px 50px 10px 10px;
-	border: 1px solid salmon;
+	border: 1px solid var(--border-color);
+	background-color: var(--facade-color);
 	position: relative;
 	word-wrap: break-word;
 }
