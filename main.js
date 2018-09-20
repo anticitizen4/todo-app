@@ -1,5 +1,4 @@
-let input_field = document.querySelector(".input").children[0];
-// let input_button = document.querySelector(".input").children[1];
+let input_field = document.querySelector(".input__text");
 
 let list = document.querySelector(".main__list");
 
@@ -34,26 +33,15 @@ Object.defineProperty(storage, "entries", {
 	},
 });
 
-function handleInputSubmit(event) {
-	if (event.keyCode != 13) return;
-
-	addItem();
-}
-
 function addItem(event) {
 	if (!input_field.value) return;
 
-	let li = document.createElement("li");
-	li.textContent = input_field.value;
+	let lis = constructLis([input_field.value]);
+
+	storage.add(input_field.value);
 	input_field.value = "";
 
-	let close_button = document.createElement("span");
-	close_button.classList.add("close-button");
-	li.append(close_button);
-
-	storage.add(li.textContent);
-
-	list.append(li);
+	list.append(...lis);
 
 	updateCounter();
 }
@@ -64,17 +52,10 @@ function updateCounter() {
 
 function repopulate() {
 	let entries = storage.entries;
-	entries.forEach(entry => {
-		let li = document.createElement("li");
-		li.textContent = entry;
-		input_field.value = "";
 
-		let close_button = document.createElement("span");
-		close_button.classList.add("close-button");
-		li.append(close_button);
+	let lis = constructLis(entries);
 
-		list.append(li);
-	});
+	list.append(...lis);
 }
 
 function clear() {
@@ -82,6 +63,26 @@ function clear() {
 
 	[...list.children].forEach(el => el.remove());
 }
+
+function constructLis(entries) {
+	let lis = entries.map(entry => {
+		let li = document.createElement("li");
+		li.textContent = entry;
+
+		let close_button = document.createElement("span");
+		close_button.classList.add("close-button");
+		li.append(close_button);
+
+		return li;
+	});
+	return lis;
+}
+
+input_field.addEventListener("keypress", function() {
+	if (event.keyCode != 13) return;
+
+	addItem();
+});
 
 list.addEventListener("click", event => {
 	let target = event.target;

@@ -1,14 +1,15 @@
 :root {
-	--facade-color: snow;
-	--canvas-color: seashell;
-	--border-color: salmon;
-	--shadow-color: firebrick;
-	--bg-color: cornsilk;
-	/* color:  */
+	--facade-color: #f5f1ed;
+	--canvas-color: #dad2bc;
+	--border-color: #a99985;
+	--shadow-color: #252323;
+	--bg-color: #70798c;
+	--fg-color: #252323;
 }
 
 body {
 	background-color: var(--bg-color);
+	color: var(--fg-color);
 }
 
 button {
