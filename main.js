@@ -1,9 +1,11 @@
 let input_field = document.querySelector(".input").children[0];
-let input_button = document.querySelector(".input").children[1];
+// let input_button = document.querySelector(".input").children[1];
 
 let list = document.querySelector(".main__list");
 
-let footer_text = document.querySelector(".footer__text");
+let footer_counter = document.querySelector(".footer__counter");
+let footer_fill_button = document.querySelector(".footer__fill");
+let footer_clear_button = document.querySelector(".footer__clear");
 
 let storage = {
 	add(string) {
@@ -32,8 +34,6 @@ Object.defineProperty(storage, "entries", {
 	},
 });
 
-input_button.addEventListener("click", addItem);
-
 function handleInputSubmit(event) {
 	if (event.keyCode != 13) return;
 
@@ -58,21 +58,8 @@ function addItem(event) {
 	updateCounter();
 }
 
-list.addEventListener("click", event => {
-	let target = event.target;
-	if (!target.classList.contains("close-button")) return;
-
-	let li = target.parentElement;
-	let index = [...li.parentElement.children].indexOf(li);
-
-	storage.remove(index);
-
-	li.remove();
-	updateCounter();
-});
-
 function updateCounter() {
-	footer_text.textContent = `items total: ${list.children.length}`;
+	footer_counter.textContent = `items total: ${list.children.length}`;
 }
 
 function repopulate() {
@@ -89,6 +76,45 @@ function repopulate() {
 		list.append(li);
 	});
 }
+
+function clear() {
+	storage.entries = [];
+
+	[...list.children].forEach(el => el.remove());
+}
+
+list.addEventListener("click", event => {
+	let target = event.target;
+	if (!target.classList.contains("close-button")) return;
+
+	let li = target.parentElement;
+	let index = [...li.parentElement.children].indexOf(li);
+
+	storage.remove(index);
+
+	li.remove();
+	updateCounter();
+});
+
+footer_fill_button.addEventListener("click", _ => {
+	clear();
+
+	let total = 5;
+	let data = [];
+	for (let i = 0; i < total; i++) {
+		data[i] = `${Math.random()}`;
+	}
+	storage.entries = data;
+
+	repopulate();
+	updateCounter();
+});
+
+footer_clear_button.addEventListener("click", _ => {
+	clear();
+
+	updateCounter();
+});
 
 (function init() {
 	repopulate();

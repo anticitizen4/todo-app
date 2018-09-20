@@ -14,10 +14,10 @@
 	grid-auto-columns: 100%;
 }
 
-.input {
+.footer {
 	display: grid;
 	grid-auto-flow: column;
-	grid-template-columns: 1fr 100px;
+	grid-template-columns: 1fr 100px 100px;
 }
 
 .main {
@@ -40,8 +40,16 @@
 	content: "×";
 }
 
-.header,
-.footer {
+.header {
 	justify-items: center;
 	align-items: center;
+}
+.footer {
+	justify-items: stretch;
+	align-items: stretch;
+}
+.footer__counter {
+	justify-self: start;
+	align-self: center;
+	padding: 10px;
 }
