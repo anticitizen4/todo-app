@@ -119,6 +119,7 @@ footer_fill_button.addEventListener("click", _ => {
 	for (let i = 0; i < total; i++) {
 		data[i] = `${Math.random()}`;
 	}
+	data.push(`---- `.repeat(140));
 	storage.entries = data;
 
 	repopulate();

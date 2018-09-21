@@ -63,28 +63,32 @@ input:focus {
 
 .main__list li {
 	font-size: 1.1rem;
-	padding: 10px 50px 10px 10px;
+	padding: 10px;
 	border: 2px solid var(--border-color);
 	background-color: var(--facade-color);
 	position: relative;
 	word-wrap: break-word;
+	display: grid;
+	grid-auto-flow: column;
+	grid-template-columns: 1fr auto;
+	grid-gap: 20px;
 }
 .main__list li.dragged {
-	background-color: orangered;
+	opacity: 0.4;
 }
 .main__list li.dragged_over {
-	border: 2px dashed maroon;
+	border: 2px dashed var(--fg-color);
 }
 .main__list li.dragged_over > * {
 	pointer-events: none;
 }
 
 .close-button {
-	position: absolute;
-	right: 10px;
-	top: 10px;
-	/* font-size: 150%; */
-	/* transform: translateY(-50%); */
+	/* position: absolute; */
+	/* right: 10px; */
+	/* top: 10px; */
+	justify-self: end;
+	align-self: center;
 }
 .close-button:after {
 	content: "×";
