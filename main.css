@@ -20,18 +20,22 @@ button {
 	background-color: transparent;
 	cursor: pointer;
 }
-
 button:hover {
 	background-color: var(--facade-color);
 }
 
 input {
-	font-size: 1.1rem;
-	padding: 14px;
 	border: none;
 	background-color: transparent;
+	font: inherit;
+	padding: 0;
 }
-input:focus {
+
+input.input__text {
+	font-size: 1.1rem;
+	padding: 14px;
+}
+input.input__text:focus {
 	background-color: var(--facade-color);
 }
 
@@ -66,7 +70,6 @@ input:focus {
 	padding: 10px;
 	border: 2px solid var(--border-color);
 	background-color: var(--facade-color);
-	position: relative;
 	word-wrap: break-word;
 	display: grid;
 	grid-auto-flow: column;
@@ -85,11 +88,11 @@ input:focus {
 .main__list li.dragged_over > * {
 	pointer-events: none;
 }
+.main__list li.inactive {
+	opacity: 0.2;
+}
 
 .close-button {
-	/* position: absolute; */
-	/* right: 10px; */
-	/* top: 10px; */
 	justify-self: end;
 	align-self: center;
 }

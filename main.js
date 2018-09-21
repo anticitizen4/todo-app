@@ -24,6 +24,12 @@ let storage = {
 		[data[i], data[j]] = [data[j], data[i]];
 		this.entries = data;
 	},
+
+	update(index, string) {
+		let data = this.entries;
+		data[index] = string;
+		this.entries = data;
+	},
 };
 Object.defineProperty(storage, "entries", {
 	get() {
@@ -124,6 +130,49 @@ list.addEventListener("click", event => {
 	updateCounter();
 });
 
+// edit li
+list.addEventListener("dblclick", event => {
+	let target = event.target;
+	if (target.tagName != "P") return;
+
+	let edit_field = document.createElement("input");
+	edit_field.type = "text";
+	edit_field.value = target.textContent;
+
+	let li = target.parentElement;
+	li.draggable = "";
+
+	target.replaceWith(edit_field);
+	edit_field.focus();
+
+	[...list.children].forEach(child => {
+		if (child === li) return;
+		child.classList.add("inactive");
+	});
+
+	edit_field.addEventListener("blur", event => {
+		let target = event.target;
+		if (target.tagName != "INPUT") return;
+
+		let str = target.value;
+		let p = document.createElement("p");
+		p.textContent = str;
+
+		let index = [...li.parentElement.children].indexOf(li);
+
+		storage.update(index, str);
+
+		li.draggable = "true";
+
+		target.replaceWith(p);
+
+		[...list.children].forEach(child => {
+			if (child === li) return;
+			child.classList.remove("inactive");
+		});
+	});
+});
+
 // fill list with random strings
 footer_fill_button.addEventListener("click", _ => {
 	clear();
@@ -200,10 +249,6 @@ list.addEventListener("drop", event => {
 	let j = [...dragged_li.parentElement.children].indexOf(dragged_li);
 	storage.swap(i, j);
 
-	// [target.innerHTML, dragged_li.innerHTML] = [
-	// 	dragged_li.innerHTML,
-	// 	target.innerHTML,
-	// ];
 	swapElements(dragged_li, target);
 });
 
