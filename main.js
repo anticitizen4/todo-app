@@ -88,6 +88,13 @@ function constructLis(entries) {
 	return lis;
 }
 
+function constructBlankImg() {
+	let img = document.createElement("img");
+	img.src =
+		"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
+	return img;
+}
+
 // entry
 input_field.addEventListener("keypress", function() {
 	if (event.keyCode != 13) return;
@@ -139,9 +146,11 @@ list.addEventListener("dragstart", event => {
 	let target = event.target;
 	if (target.tagName != "LI") return;
 
-	target.classList.add("dragged");
+	target.classList.add("dragged", "dragged_over");
 
-	event.dataTransfer.effectAllowed = "copy";
+	let img = constructBlankImg();
+	event.dataTransfer.setDragImage(img, 0, 0);
+
 	event.dataTransfer.setData("text/html", "");
 	dragged_li = target;
 });
