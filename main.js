@@ -18,6 +18,12 @@ let storage = {
 		data.splice(index, 1);
 		this.entries = data;
 	},
+
+	swap(i, j) {
+		let data = this.entries;
+		[data[i], data[j]] = [data[j], data[i]];
+		this.entries = data;
+	},
 };
 Object.defineProperty(storage, "entries", {
 	get() {
@@ -67,7 +73,11 @@ function clear() {
 function constructLis(entries) {
 	let lis = entries.map(entry => {
 		let li = document.createElement("li");
-		li.textContent = entry;
+		li.draggable = "true";
+
+		let p = document.createElement("p");
+		p.textContent = entry;
+		li.append(p);
 
 		let close_button = document.createElement("span");
 		close_button.classList.add("close-button");
@@ -78,16 +88,19 @@ function constructLis(entries) {
 	return lis;
 }
 
+// entry
 input_field.addEventListener("keypress", function() {
 	if (event.keyCode != 13) return;
 
 	addItem();
 });
 
+// close buttons
 list.addEventListener("click", event => {
 	let target = event.target;
 	if (!target.classList.contains("close-button")) return;
 
+	console.log(event);
 	let li = target.parentElement;
 	let index = [...li.parentElement.children].indexOf(li);
 
@@ -97,6 +110,7 @@ list.addEventListener("click", event => {
 	updateCounter();
 });
 
+// fill list with random strings
 footer_fill_button.addEventListener("click", _ => {
 	clear();
 
@@ -111,10 +125,66 @@ footer_fill_button.addEventListener("click", _ => {
 	updateCounter();
 });
 
+// clear list
 footer_clear_button.addEventListener("click", _ => {
 	clear();
 
 	updateCounter();
+});
+
+// DnD
+let dragged_li;
+list.addEventListener("dragstart", event => {
+	let target = event.target;
+	if (target.tagName != "LI") return;
+
+	target.classList.add("dragged");
+
+	event.dataTransfer.effectAllowed = "copy";
+	event.dataTransfer.setData("text/html", "");
+	dragged_li = target;
+});
+
+list.addEventListener("dragenter", event => {
+	let target = event.target;
+	if (target.tagName != "LI") return;
+
+	target.classList.add("dragged_over");
+});
+list.addEventListener("dragover", event => {
+	let target = event.target;
+	if (target.tagName != "LI") return;
+
+	event.preventDefault();
+});
+list.addEventListener("dragleave", event => {
+	let target = event.target;
+	if (target.tagName != "LI") return;
+
+	target.classList.remove("dragged_over");
+});
+list.addEventListener("dragend", event => {
+	let target = event.target;
+	if (target.tagName != "LI") return;
+
+	target.classList.remove("dragged");
+});
+
+list.addEventListener("drop", event => {
+	let target = event.target;
+	if (target.tagName != "LI") return;
+
+	target.classList.remove("dragged_over");
+	if (target === dragged_li) return;
+
+	let i = [...target.parentElement.children].indexOf(target);
+	let j = [...dragged_li.parentElement.children].indexOf(dragged_li);
+	storage.swap(i, j);
+
+	[target.innerHTML, dragged_li.innerHTML] = [
+		dragged_li.innerHTML,
+		target.innerHTML,
+	];
 });
 
 (function init() {

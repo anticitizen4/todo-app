@@ -64,15 +64,25 @@ input:focus {
 .main__list li {
 	font-size: 1.1rem;
 	padding: 10px 50px 10px 10px;
-	border: 1px solid var(--border-color);
+	border: 2px solid var(--border-color);
 	background-color: var(--facade-color);
 	position: relative;
 	word-wrap: break-word;
+}
+.main__list li.dragged {
+	background-color: orangered;
+}
+.main__list li.dragged_over {
+	border: 2px dashed maroon;
+}
+.main__list li.dragged_over > * {
+	pointer-events: none;
 }
 
 .close-button {
 	position: absolute;
 	right: 10px;
+	top: 10px;
 	/* font-size: 150%; */
 	/* transform: translateY(-50%); */
 }
