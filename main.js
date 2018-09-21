@@ -95,6 +95,14 @@ function constructBlankImg() {
 	return img;
 }
 
+function swapElements(el1, el2) {
+	let prev1 = el1.previousSibling;
+	let prev2 = el2.previousSibling;
+
+	prev1.after(el2);
+	prev2.after(el1);
+}
+
 // entry
 input_field.addEventListener("keypress", function() {
 	if (event.keyCode != 13) return;
@@ -107,7 +115,6 @@ list.addEventListener("click", event => {
 	let target = event.target;
 	if (!target.classList.contains("close-button")) return;
 
-	console.log(event);
 	let li = target.parentElement;
 	let index = [...li.parentElement.children].indexOf(li);
 
@@ -152,6 +159,7 @@ list.addEventListener("dragstart", event => {
 	event.dataTransfer.setDragImage(img, 0, 0);
 
 	event.dataTransfer.setData("text/html", "");
+
 	dragged_li = target;
 });
 
@@ -173,11 +181,12 @@ list.addEventListener("dragleave", event => {
 
 	target.classList.remove("dragged_over");
 });
+
 list.addEventListener("dragend", event => {
 	let target = event.target;
 	if (target.tagName != "LI") return;
 
-	target.classList.remove("dragged");
+	target.classList.remove("dragged", "dragged_over");
 });
 
 list.addEventListener("drop", event => {
@@ -191,10 +200,11 @@ list.addEventListener("drop", event => {
 	let j = [...dragged_li.parentElement.children].indexOf(dragged_li);
 	storage.swap(i, j);
 
-	[target.innerHTML, dragged_li.innerHTML] = [
-		dragged_li.innerHTML,
-		target.innerHTML,
-	];
+	// [target.innerHTML, dragged_li.innerHTML] = [
+	// 	dragged_li.innerHTML,
+	// 	target.innerHTML,
+	// ];
+	swapElements(dragged_li, target);
 });
 
 (function init() {

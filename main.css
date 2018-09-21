@@ -72,15 +72,14 @@ input:focus {
 	grid-auto-flow: column;
 	grid-template-columns: 1fr auto;
 	grid-gap: 20px;
-	transition-property: transform;
-	transition-duration: 0.1s;
+	/* transition-property: transform; */
+	/* transition-duration: 1s; */
 }
 .main__list li.dragged {
 	opacity: 0.68;
 	transform: scale(0.96);
 }
 .main__list li.dragged_over {
-	/* transform: scale(0.96); */
 	border: 2px dashed var(--fg-color);
 }
 .main__list li.dragged_over > * {
