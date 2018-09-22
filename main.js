@@ -9,9 +9,9 @@ let footer_clear_button = document.querySelector(".footer__clear");
 // storage
 //#region
 let storage = {
-	add(entry) {
+	unshift(entry) {
 		let data = this.entries;
-		data.push(entry);
+		data.unshift(entry);
 		this.entries = data;
 	},
 
@@ -63,10 +63,10 @@ function addItem(event) {
 	let entry = { value: input_field.value };
 	let lis = constructLis([entry]);
 
-	storage.add(entry);
+	storage.unshift(entry);
 	input_field.value = "";
 
-	list.append(...lis);
+	list.prepend(...lis);
 
 	updateCounter();
 }
