@@ -9,9 +9,9 @@ let footer_clear_button = document.querySelector(".footer__clear");
 // storage
 //#region
 let storage = {
-	add(string) {
+	add(entry) {
 		let data = this.entries;
-		data.push(string);
+		data.push(entry);
 		this.entries = data;
 	},
 
@@ -27,9 +27,18 @@ let storage = {
 		this.entries = data;
 	},
 
-	update(index, string) {
+	update(index, options) {
 		let data = this.entries;
-		data[index] = string;
+		let entry = data[index];
+
+		if (options.value != undefined) {
+			entry.value = options.value;
+		}
+		if (options.completed != undefined) {
+			entry.completed = options.completed;
+		}
+
+		data[index] = entry;
 		this.entries = data;
 	},
 };
@@ -51,9 +60,10 @@ Object.defineProperty(storage, "entries", {
 function addItem(event) {
 	if (!input_field.value) return;
 
-	let lis = constructLis([input_field.value]);
+	let entry = { value: input_field.value };
+	let lis = constructLis([entry]);
 
-	storage.add(input_field.value);
+	storage.add(entry);
 	input_field.value = "";
 
 	list.append(...lis);
@@ -80,14 +90,18 @@ function clear() {
 }
 
 function constructLis(entries) {
-	let lis = entries.map(entry => {
+	let lis = entries.map(({ value, completed }) => {
 		let li = document.createElement("li");
 		li.draggable = "true";
 
-		let checkbox = constructCheckbox();
+		if (completed) {
+			li.classList.add("completed");
+		}
+
+		let checkbox = constructCheckbox(completed);
 
 		let p = document.createElement("p");
-		p.textContent = entry;
+		p.textContent = value;
 
 		let close_button = document.createElement("span");
 		close_button.classList.add("close-button");
@@ -98,13 +112,17 @@ function constructLis(entries) {
 	return lis;
 }
 
-function constructCheckbox() {
+function constructCheckbox(checked) {
 	let div = document.createElement("div");
 	div.classList.add("checkbox");
 
 	let input = document.createElement("input");
 	input.type = "checkbox";
 	let id = `${Math.random()}`;
+
+	if (checked) {
+		input.checked = checked;
+	}
 
 	let label = document.createElement("label");
 	label.htmlFor = input.id = id;
@@ -194,6 +212,24 @@ list.addEventListener("dblclick", event => {
 	});
 });
 
+// checkbox change
+list.addEventListener("change", event => {
+	let target = event.target;
+	if (target.tagName != "INPUT" || target.type != "checkbox") return;
+
+	let li = target.parentElement.parentElement;
+	if (target.checked) {
+		li.classList.add("completed");
+		let index = [...li.parentElement.children].indexOf(li);
+		storage.update(index, { completed: true });
+
+		return;
+	}
+	li.classList.remove("completed");
+	let index = [...li.parentElement.children].indexOf(li);
+	storage.update(index, { completed: false });
+});
+
 // fill list with random strings
 footer_fill_button.addEventListener("click", _ => {
 	clear();
@@ -201,9 +237,9 @@ footer_fill_button.addEventListener("click", _ => {
 	let total = 5;
 	let data = [];
 	for (let i = 0; i < total; i++) {
-		data[i] = `${Math.random()}`;
+		data[i] = { value: `${Math.random()}` };
 	}
-	data.push(`---- `.repeat(140));
+	data.push({ value: `---- `.repeat(140) });
 	storage.entries = data;
 
 	repopulate();
