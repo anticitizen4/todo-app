@@ -4,6 +4,9 @@ let list = document.querySelector(".main__list");
 
 let footer_counter = document.querySelector(".footer__counter");
 let footer_fill_button = document.querySelector(".footer__fill");
+let footer_clear_completed_button = document.querySelector(
+	".footer__clear-completed"
+);
 let footer_clear_button = document.querySelector(".footer__clear");
 
 // storage
@@ -66,7 +69,7 @@ function addItem(event) {
 	storage.unshift(entry);
 	input_field.value = "";
 
-	list.prepend(...lis);
+	list.firstChild.after(...lis);
 
 	updateCounter();
 }
@@ -81,6 +84,17 @@ function repopulate() {
 	let lis = constructLis(entries);
 
 	list.append(...lis);
+}
+
+function clearCompleted() {
+	[...list.children].forEach(li => {
+		if (!li.classList.contains("completed")) return;
+
+		let index = getChildIndex(li);
+		storage.remove(index);
+
+		li.remove();
+	});
 }
 
 function clear() {
@@ -147,6 +161,11 @@ function swapElements(el1, el2) {
 	prev2.after(el1);
 }
 
+function getChildIndex(child) {
+	let index = [...child.parentElement.children].indexOf(child);
+	return index;
+}
+
 // entry
 input_field.addEventListener("keypress", function() {
 	if (event.keyCode != 13) return;
@@ -160,8 +179,8 @@ list.addEventListener("click", event => {
 	if (!target.classList.contains("close-button")) return;
 
 	let li = target.parentElement;
-	let index = [...li.parentElement.children].indexOf(li);
 
+	let index = getChildIndex(li);
 	storage.remove(index);
 
 	li.remove();
@@ -193,13 +212,12 @@ list.addEventListener("dblclick", event => {
 		let target = event.target;
 		if (target.tagName != "INPUT") return;
 
-		let str = target.value;
+		let value = target.value;
 		let p = document.createElement("p");
-		p.textContent = str;
+		p.textContent = value;
 
-		let index = [...li.parentElement.children].indexOf(li);
-
-		storage.update(index, str);
+		let index = getChildIndex(li);
+		storage.update(index, { value: value });
 
 		li.draggable = "true";
 
@@ -218,15 +236,14 @@ list.addEventListener("change", event => {
 	if (target.tagName != "INPUT" || target.type != "checkbox") return;
 
 	let li = target.parentElement.parentElement;
+	let index = getChildIndex(li);
 	if (target.checked) {
 		li.classList.add("completed");
-		let index = [...li.parentElement.children].indexOf(li);
 		storage.update(index, { completed: true });
 
 		return;
 	}
 	li.classList.remove("completed");
-	let index = [...li.parentElement.children].indexOf(li);
 	storage.update(index, { completed: false });
 });
 
@@ -246,7 +263,14 @@ footer_fill_button.addEventListener("click", _ => {
 	updateCounter();
 });
 
-// clear list
+// clear completed entries
+footer_clear_completed_button.addEventListener("click", _ => {
+	clearCompleted();
+
+	updateCounter();
+});
+
+// clear all entries
 footer_clear_button.addEventListener("click", _ => {
 	clear();
 
@@ -303,8 +327,9 @@ list.addEventListener("drop", event => {
 	target.classList.remove("dragged_over");
 	if (target === dragged_li) return;
 
-	let i = [...target.parentElement.children].indexOf(target);
-	let j = [...dragged_li.parentElement.children].indexOf(dragged_li);
+	let i = getChildIndex(target);
+	let j = getChildIndex(dragged_li);
+
 	storage.swap(i, j);
 
 	swapElements(dragged_li, target);
