@@ -6,6 +6,8 @@ let footer_counter = document.querySelector(".footer__counter");
 let footer_fill_button = document.querySelector(".footer__fill");
 let footer_clear_button = document.querySelector(".footer__clear");
 
+// storage
+//#region
 let storage = {
 	add(string) {
 		let data = this.entries;
@@ -44,6 +46,7 @@ Object.defineProperty(storage, "entries", {
 		localStorage.entries = JSON.stringify(data);
 	},
 });
+//#endregion
 
 function addItem(event) {
 	if (!input_field.value) return;
@@ -81,17 +84,34 @@ function constructLis(entries) {
 		let li = document.createElement("li");
 		li.draggable = "true";
 
+		let checkbox = constructCheckbox();
+
 		let p = document.createElement("p");
 		p.textContent = entry;
-		li.append(p);
 
 		let close_button = document.createElement("span");
 		close_button.classList.add("close-button");
-		li.append(close_button);
 
+		li.append(checkbox, p, close_button);
 		return li;
 	});
 	return lis;
+}
+
+function constructCheckbox() {
+	let div = document.createElement("div");
+	div.classList.add("checkbox");
+
+	let input = document.createElement("input");
+	input.type = "checkbox";
+	let id = `${Math.random()}`;
+
+	let label = document.createElement("label");
+	label.htmlFor = input.id = id;
+
+	div.append(input, label);
+
+	return div;
 }
 
 function constructBlankImg() {
@@ -150,6 +170,7 @@ list.addEventListener("dblclick", event => {
 		child.classList.add("inactive");
 	});
 
+	// TODO: extract to parent
 	edit_field.addEventListener("blur", event => {
 		let target = event.target;
 		if (target.tagName != "INPUT") return;
@@ -197,6 +218,7 @@ footer_clear_button.addEventListener("click", _ => {
 });
 
 // DnD
+//#region
 let dragged_li;
 list.addEventListener("dragstart", event => {
 	let target = event.target;
@@ -251,6 +273,7 @@ list.addEventListener("drop", event => {
 
 	swapElements(dragged_li, target);
 });
+//#endregion
 
 (function init() {
 	repopulate();

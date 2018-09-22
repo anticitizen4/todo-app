@@ -5,6 +5,8 @@
 	--shadow-color: #252323;
 	--bg-color: #70798c;
 	--fg-color: #252323;
+	--outline-color: #3399ff;
+	--checkbox-size: 22px;
 }
 
 body {
@@ -16,26 +18,29 @@ body {
 }
 
 button {
-	/* padding: 0; */
+	padding: 0;
+	outline: none;
 	font: inherit;
 	color: inherit;
 	background-color: transparent;
 	cursor: pointer;
 }
-button:hover {
+button:hover,
+button:focus {
 	background-color: var(--facade-color);
 }
 
 input {
+	padding: 0;
+	outline: none;
 	border: none;
 	background-color: transparent;
 	font: inherit;
-	padding: 0;
 }
 
 input.input__text {
-	font-size: 1.1rem;
 	padding: 14px;
+	font-size: 1.1rem;
 }
 input.input__text:focus {
 	background-color: var(--facade-color);
@@ -71,8 +76,8 @@ input.input__text:focus {
 	word-wrap: break-word;
 	display: grid;
 	grid-auto-flow: column;
-	grid-template-columns: 1fr auto;
-	grid-gap: 20px;
+	grid-template-columns: auto 1fr auto;
+	grid-gap: 14px;
 	/* transition-property: transform; */
 	/* transition-duration: 1s; */
 }
@@ -90,8 +95,48 @@ input.input__text:focus {
 	opacity: 0.2;
 }
 
+/* checkbox */
+/* #region */
+.checkbox input {
+	position: absolute;
+	opacity: 0;
+}
+.checkbox label {
+	position: relative;
+	display: block;
+	width: var(--checkbox-size);
+	height: var(--checkbox-size);
+}
+.checkbox label::before,
+.checkbox label::after {
+	position: absolute;
+}
+.checkbox label::before {
+	width: var(--checkbox-size);
+	height: var(--checkbox-size);
+
+	border: 1px solid var(--border-color);
+	border-radius: 2px;
+	content: "";
+}
+.checkbox label::after {
+	width: 10px;
+	height: 20px;
+	left: 6px;
+	border-right: 3px solid;
+	border-bottom: 3px solid;
+	transform: rotate(35deg);
+}
+.checkbox input:focus + label::before {
+	outline: 3px solid var(--outline-color);
+}
+.checkbox input:checked + label::after {
+	content: "";
+}
+/* #endregion */
+
+.checkbox,
 .close-button {
-	justify-self: end;
 	align-self: center;
 }
 .close-button:after {
@@ -108,6 +153,5 @@ input.input__text:focus {
 }
 
 .footer__counter {
-	align-self: center;
 	padding: 10px;
 }
