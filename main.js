@@ -106,7 +106,7 @@ function clear() {
 function constructLis(entries) {
 	let lis = entries.map(({ value, completed }) => {
 		let li = document.createElement("li");
-		li.draggable = "true";
+		li.draggable = true;
 
 		if (completed) {
 			li.classList.add("completed");
@@ -197,7 +197,7 @@ list.addEventListener("dblclick", event => {
 	edit_field.value = target.textContent;
 
 	let li = target.parentElement;
-	li.draggable = "";
+	li.draggable = false;
 
 	target.replaceWith(edit_field);
 	edit_field.focus();
@@ -219,7 +219,7 @@ list.addEventListener("dblclick", event => {
 		let index = getChildIndex(li);
 		storage.update(index, { value: value });
 
-		li.draggable = "true";
+		li.draggable = true;
 
 		target.replaceWith(p);
 

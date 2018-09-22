@@ -92,12 +92,12 @@ input.input__text:focus {
 .main__list li.dragged_over > * {
 	pointer-events: none;
 }
-.main__list li.inactive {
-	opacity: 0.2;
-}
 .main__list li.completed {
 	text-decoration: line-through;
 	opacity: 0.6;
+}
+.main__list li.inactive {
+	opacity: 0.2;
 }
 
 /* checkbox */
