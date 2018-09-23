@@ -1,13 +1,13 @@
-let input_field = document.querySelector(".input__text");
+let inputField = document.querySelector(".input__field");
 
 let list = document.querySelector(".main__list");
 
-let footer_counter = document.querySelector(".footer__counter");
-let footer_fill_button = document.querySelector(".footer__fill");
-let footer_clear_completed_button = document.querySelector(
+let footerCounter = document.querySelector(".footer__counter");
+let footerFillButton = document.querySelector(".footer__fill");
+let footerClearCompletedButton = document.querySelector(
 	".footer__clear-completed"
 );
-let footer_clear_button = document.querySelector(".footer__clear");
+let footerClearButton = document.querySelector(".footer__clear");
 
 // storage
 //#region
@@ -61,13 +61,13 @@ Object.defineProperty(storage, "entries", {
 //#endregion
 
 function addItem(event) {
-	if (!input_field.value) return;
+	if (!inputField.value) return;
 
-	let entry = { value: input_field.value };
+	let entry = { value: inputField.value };
 	let lis = constructLis([entry]);
 
 	storage.unshift(entry);
-	input_field.value = "";
+	inputField.value = "";
 
 	list.firstChild.after(...lis);
 
@@ -75,7 +75,7 @@ function addItem(event) {
 }
 
 function updateCounter() {
-	footer_counter.textContent = `items total: ${list.children.length}`;
+	footerCounter.textContent = `items total: ${list.children.length}`;
 }
 
 function repopulate() {
@@ -117,10 +117,10 @@ function constructLis(entries) {
 		let p = document.createElement("p");
 		p.textContent = value;
 
-		let close_button = document.createElement("span");
-		close_button.classList.add("close-button");
+		let closeButton = document.createElement("span");
+		closeButton.classList.add("close-button");
 
-		li.append(checkbox, p, close_button);
+		li.append(checkbox, p, closeButton);
 		return li;
 	});
 	return lis;
@@ -167,7 +167,7 @@ function getChildIndex(child) {
 }
 
 // entry
-input_field.addEventListener("keypress", function() {
+inputField.addEventListener("keypress", function() {
 	if (event.keyCode != 13) return;
 
 	addItem();
@@ -192,15 +192,15 @@ list.addEventListener("dblclick", event => {
 	let target = event.target;
 	if (target.tagName != "P") return;
 
-	let edit_field = document.createElement("input");
-	edit_field.type = "text";
-	edit_field.value = target.textContent;
+	let editField = document.createElement("input");
+	editField.type = "text";
+	editField.value = target.textContent;
 
 	let li = target.parentElement;
 	li.draggable = false;
 
-	target.replaceWith(edit_field);
-	edit_field.focus();
+	target.replaceWith(editField);
+	editField.focus();
 
 	[...list.children].forEach(child => {
 		if (child === li) return;
@@ -208,7 +208,7 @@ list.addEventListener("dblclick", event => {
 	});
 
 	// TODO: extract to parent
-	edit_field.addEventListener("blur", event => {
+	editField.addEventListener("blur", event => {
 		let target = event.target;
 		if (target.tagName != "INPUT") return;
 
@@ -248,7 +248,7 @@ list.addEventListener("change", event => {
 });
 
 // fill list with random strings
-footer_fill_button.addEventListener("click", _ => {
+footerFillButton.addEventListener("click", _ => {
 	clear();
 
 	let total = 5;
@@ -264,14 +264,14 @@ footer_fill_button.addEventListener("click", _ => {
 });
 
 // clear completed entries
-footer_clear_completed_button.addEventListener("click", _ => {
+footerClearCompletedButton.addEventListener("click", _ => {
 	clearCompleted();
 
 	updateCounter();
 });
 
 // clear all entries
-footer_clear_button.addEventListener("click", _ => {
+footerClearButton.addEventListener("click", _ => {
 	clear();
 
 	updateCounter();
@@ -279,26 +279,26 @@ footer_clear_button.addEventListener("click", _ => {
 
 // DnD
 //#region
-let dragged_li;
+let draggedLi;
 list.addEventListener("dragstart", event => {
 	let target = event.target;
 	if (target.tagName != "LI") return;
 
-	target.classList.add("dragged", "dragged_over");
+	target.classList.add("dragged", "dragged-over");
 
 	let img = constructBlankImg();
 	event.dataTransfer.setDragImage(img, 0, 0);
 
 	event.dataTransfer.setData("text/html", "");
 
-	dragged_li = target;
+	draggedLi = target;
 });
 
 list.addEventListener("dragenter", event => {
 	let target = event.target;
 	if (target.tagName != "LI") return;
 
-	target.classList.add("dragged_over");
+	target.classList.add("dragged-over");
 });
 list.addEventListener("dragover", event => {
 	let target = event.target;
@@ -310,29 +310,29 @@ list.addEventListener("dragleave", event => {
 	let target = event.target;
 	if (target.tagName != "LI") return;
 
-	target.classList.remove("dragged_over");
+	target.classList.remove("dragged-over");
 });
 
 list.addEventListener("dragend", event => {
 	let target = event.target;
 	if (target.tagName != "LI") return;
 
-	target.classList.remove("dragged", "dragged_over");
+	target.classList.remove("dragged", "dragged-over");
 });
 
 list.addEventListener("drop", event => {
 	let target = event.target;
 	if (target.tagName != "LI") return;
 
-	target.classList.remove("dragged_over");
-	if (target === dragged_li) return;
+	target.classList.remove("dragged-over");
+	if (target === draggedLi) return;
 
 	let i = getChildIndex(target);
-	let j = getChildIndex(dragged_li);
+	let j = getChildIndex(draggedLi);
 
 	storage.swap(i, j);
 
-	swapElements(dragged_li, target);
+	swapElements(draggedLi, target);
 });
 //#endregion
 

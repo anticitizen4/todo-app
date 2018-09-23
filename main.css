@@ -38,11 +38,11 @@ input {
 	font: inherit;
 }
 
-input.input__text {
+.input__field {
 	padding: 14px;
 	font-size: 1.1rem;
 }
-input.input__text:focus {
+.input__field:focus {
 	background-color: var(--facade-color);
 }
 
@@ -86,10 +86,10 @@ input.input__text:focus {
 	opacity: 0.68;
 	transform: scale(0.96);
 }
-.main__list li.dragged_over {
+.main__list li.dragged-over {
 	border: 2px dashed var(--fg-color);
 }
-.main__list li.dragged_over > * {
+.main__list li.dragged-over > * {
 	pointer-events: none;
 }
 .main__list li.completed {
