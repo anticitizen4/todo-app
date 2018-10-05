@@ -167,7 +167,7 @@ function getChildIndex(child) {
 }
 
 // entry
-inputField.addEventListener("keypress", function() {
+inputField.addEventListener("keypress", event => {
 	if (event.keyCode != 13) return;
 
 	addItem();
