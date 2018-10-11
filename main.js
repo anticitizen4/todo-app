@@ -132,6 +132,7 @@ function constructCheckbox(checked) {
 
 	let input = document.createElement("input");
 	input.type = "checkbox";
+	// TODO: change id to something unique
 	let id = `${Math.random()}`;
 
 	if (checked) {
