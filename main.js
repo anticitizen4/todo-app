@@ -1,3 +1,5 @@
+import u from "./utility.js";
+
 let inputField = document.querySelector(".input__field");
 
 let list = document.querySelector(".main__list");
@@ -90,7 +92,7 @@ function clearCompleted() {
 	[...list.children].forEach(li => {
 		if (!li.classList.contains("completed")) return;
 
-		let index = getChildIndex(li);
+		let index = u.getChildIndex(li);
 		storage.remove(index);
 
 		li.remove();
@@ -147,26 +149,6 @@ function constructCheckbox(checked) {
 	return div;
 }
 
-function constructBlankImg() {
-	let img = document.createElement("img");
-	img.src =
-		"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
-	return img;
-}
-
-function swapElements(el1, el2) {
-	let prev1 = el1.previousSibling;
-	let prev2 = el2.previousSibling;
-
-	prev1.after(el2);
-	prev2.after(el1);
-}
-
-function getChildIndex(child) {
-	let index = [...child.parentElement.children].indexOf(child);
-	return index;
-}
-
 // entry
 inputField.addEventListener("keypress", event => {
 	if (event.keyCode != 13) return;
@@ -181,7 +163,7 @@ list.addEventListener("click", event => {
 
 	let li = target.parentElement;
 
-	let index = getChildIndex(li);
+	let index = u.getChildIndex(li);
 	storage.remove(index);
 
 	li.remove();
@@ -217,7 +199,7 @@ list.addEventListener("dblclick", event => {
 		let p = document.createElement("p");
 		p.textContent = value;
 
-		let index = getChildIndex(li);
+		let index = u.getChildIndex(li);
 		storage.update(index, { value: value });
 
 		li.draggable = true;
@@ -237,7 +219,7 @@ list.addEventListener("change", event => {
 	if (target.tagName != "INPUT" || target.type != "checkbox") return;
 
 	let li = target.parentElement.parentElement;
-	let index = getChildIndex(li);
+	let index = u.getChildIndex(li);
 	if (target.checked) {
 		li.classList.add("completed");
 		storage.update(index, { completed: true });
@@ -287,7 +269,7 @@ list.addEventListener("dragstart", event => {
 
 	target.classList.add("dragged", "dragged-over");
 
-	let img = constructBlankImg();
+	let img = u.constructBlankImg();
 	event.dataTransfer.setDragImage(img, 0, 0);
 
 	event.dataTransfer.setData("text/html", "");
@@ -328,12 +310,12 @@ list.addEventListener("drop", event => {
 	target.classList.remove("dragged-over");
 	if (target === draggedLi) return;
 
-	let i = getChildIndex(target);
-	let j = getChildIndex(draggedLi);
+	let i = u.getChildIndex(target);
+	let j = u.getChildIndex(draggedLi);
 
 	storage.swap(i, j);
 
-	swapElements(draggedLi, target);
+	u.swapElements(draggedLi, target);
 });
 //#endregion
 
