@@ -1,5 +1,7 @@
 // pure helper functions
 
+let idCounter = 0;
+
 function getChildIndex(child) {
 	let index = [...child.parentElement.children].indexOf(child);
 	return index;
@@ -49,15 +51,13 @@ function constructCheckbox(checked) {
 
 	let input = document.createElement("input");
 	input.type = "checkbox";
-	// TODO: change id to something unique
-	let id = `${Math.random()}`;
 
 	if (checked) {
 		input.checked = checked;
 	}
 
 	let label = document.createElement("label");
-	label.htmlFor = input.id = id;
+	label.htmlFor = input.id = `${idCounter++}`;
 
 	div.append(input, label);
 
