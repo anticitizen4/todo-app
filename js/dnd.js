@@ -1,5 +1,3 @@
-// dnd functionality
-
 import u from "./utility.js";
 import storage from "./storage.js";
 
