@@ -34,7 +34,7 @@ function constructLis(entries) {
 		let p = document.createElement("p");
 		p.textContent = value;
 
-		let closeButton = document.createElement("span");
+		let closeButton = document.createElement("button");
 		closeButton.classList.add("close-button");
 
 		li.append(checkbox, p, closeButton);

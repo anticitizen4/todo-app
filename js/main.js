@@ -44,8 +44,7 @@ function addItem(event) {
 
 // entry
 inputField.addEventListener("keypress", event => {
-	// TODO: use string keycode comparison
-	if (event.keyCode != 13) return;
+	if (event.key != "Enter") return;
 
 	addItem();
 });
@@ -67,16 +66,17 @@ list.addEventListener("click", event => {
 	updateCounter();
 });
 
-// edit li
+// start editing item
 list.addEventListener("dblclick", event => {
 	let target = event.target;
 	if (target.tagName != "P") return;
+
+	let li = target.parentElement;
 
 	let editField = document.createElement("input");
 	editField.type = "text";
 	editField.value = target.textContent;
 
-	let li = target.parentElement;
 	li.draggable = false;
 
 	target.replaceWith(editField);
@@ -86,27 +86,29 @@ list.addEventListener("dblclick", event => {
 		if (child === li) return;
 		child.classList.add("inactive");
 	});
+});
 
-	// TODO: extract to parent
-	editField.addEventListener("blur", event => {
-		let target = event.target;
-		if (target.tagName != "INPUT") return;
+// stop editing item
+list.addEventListener("focusout", event => {
+	let target = event.target;
+	if (target.tagName != "INPUT") return;
 
-		let value = target.value;
-		let p = document.createElement("p");
-		p.textContent = value;
+	let li = target.parentElement;
+	let value = target.value;
 
-		let index = u.getChildIndex(li);
-		storage.update(index, { value: value });
+	let p = document.createElement("p");
+	p.textContent = value;
 
-		li.draggable = true;
+	let index = u.getChildIndex(li);
+	storage.update(index, { value: value });
 
-		target.replaceWith(p);
+	li.draggable = true;
 
-		[...list.children].forEach(child => {
-			if (child === li) return;
-			child.classList.remove("inactive");
-		});
+	target.replaceWith(p);
+
+	[...list.children].forEach(child => {
+		if (child === li) return;
+		child.classList.remove("inactive");
 	});
 });
 

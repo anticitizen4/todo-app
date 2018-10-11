@@ -18,6 +18,7 @@ body {
 }
 
 button {
+	border: 0;
 	padding: 0;
 	outline: none;
 	font: inherit;
@@ -31,9 +32,9 @@ button:focus {
 }
 
 input {
+	border: 0;
 	padding: 0;
 	outline: none;
-	border: none;
 	background-color: transparent;
 	font: inherit;
 }
