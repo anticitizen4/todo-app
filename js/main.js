@@ -8,11 +8,9 @@ let inputField = document.querySelector(".input__field");
 let list = document.querySelector(".main__list");
 
 let footerCounter = document.querySelector(".footer__counter");
-let footerFillButton = document.querySelector(".footer__fill");
-let footerClearCompletedButton = document.querySelector(
-	".footer__clear-completed"
-);
-let footerClearButton = document.querySelector(".footer__clear");
+let btnFill = document.querySelector(".footer__fill");
+let btnClearCompleted = document.querySelector(".footer__clear-completed");
+let btnClear = document.querySelector(".footer__clear");
 
 function repopulate() {
 	let entries = storage.entries;
@@ -26,8 +24,15 @@ function updateCounter() {
 	footerCounter.textContent = `items total: ${list.children.length}`;
 }
 
-// entry field
+// item add
 //#region
+inputField.addEventListener("keypress", handleItemAdd);
+
+function handleItemAdd(event) {
+	if (event.key != "Enter") return;
+	addItem();
+}
+
 function addItem(event) {
 	if (!inputField.value) return;
 
@@ -41,34 +46,28 @@ function addItem(event) {
 
 	updateCounter();
 }
-
-// entry
-inputField.addEventListener("keypress", event => {
-	if (event.key != "Enter") return;
-
-	addItem();
-});
 //#endregion
 
-// list entry control
+// item control
 //#region
-// close buttons
-list.addEventListener("click", event => {
-	let target = event.target;
+list.addEventListener("click", handleItemDelete);
+list.addEventListener("dblclick", handleItemEditStart);
+list.addEventListener("focusout", handleItemEditStop);
+list.addEventListener("change", handleItemToggle);
+
+function handleItemDelete({ target }) {
 	if (!target.classList.contains("close-button")) return;
 
 	let li = target.parentElement;
-
 	let index = u.getChildIndex(li);
+
 	storage.remove(index);
-
 	li.remove();
-	updateCounter();
-});
 
-// start editing item
-list.addEventListener("dblclick", event => {
-	let target = event.target;
+	updateCounter();
+}
+
+function handleItemEditStart({ target }) {
 	if (target.tagName != "P") return;
 
 	let li = target.parentElement;
@@ -77,48 +76,43 @@ list.addEventListener("dblclick", event => {
 	editField.type = "text";
 	editField.value = target.textContent;
 
-	li.draggable = false;
-
 	target.replaceWith(editField);
+	li.draggable = false;
 	editField.focus();
 
 	[...list.children].forEach(child => {
 		if (child === li) return;
 		child.classList.add("inactive");
 	});
-});
+}
 
-// stop editing item
-list.addEventListener("focusout", event => {
-	let target = event.target;
+function handleItemEditStop({ target }) {
 	if (target.tagName != "INPUT") return;
 
 	let li = target.parentElement;
+	let index = u.getChildIndex(li);
 	let value = target.value;
+
+	storage.update(index, { value });
 
 	let p = document.createElement("p");
 	p.textContent = value;
 
-	let index = u.getChildIndex(li);
-	storage.update(index, { value: value });
-
-	li.draggable = true;
-
 	target.replaceWith(p);
+	li.draggable = true;
 
 	[...list.children].forEach(child => {
 		if (child === li) return;
 		child.classList.remove("inactive");
 	});
-});
+}
 
-// checkbox change
-list.addEventListener("change", event => {
-	let target = event.target;
+function handleItemToggle({ target }) {
 	if (target.tagName != "INPUT" || target.type != "checkbox") return;
 
 	let li = target.parentElement.parentElement;
 	let index = u.getChildIndex(li);
+
 	if (target.checked) {
 		li.classList.add("completed");
 		storage.update(index, { completed: true });
@@ -127,11 +121,41 @@ list.addEventListener("change", event => {
 	}
 	li.classList.remove("completed");
 	storage.update(index, { completed: false });
-});
+}
+
 //#endregion
 
 // list control
 //#region
+btnFill.addEventListener("click", handleFill);
+btnClearCompleted.addEventListener("click", handleClearCompleted);
+btnClear.addEventListener("click", handleClear);
+
+function handleFill() {
+	clear();
+
+	let total = 5;
+	let data = [];
+	for (let i = 0; i < total; i++) {
+		data[i] = { value: `${Math.random()}` };
+	}
+	data.push({ value: `---- `.repeat(140) });
+	storage.entries = data;
+
+	repopulate();
+	updateCounter();
+}
+
+function handleClearCompleted() {
+	clearCompleted();
+	updateCounter();
+}
+
+function handleClear() {
+	clear();
+	updateCounter();
+}
+
 function clearCompleted() {
 	[...list.children].forEach(li => {
 		if (!li.classList.contains("completed")) return;
@@ -148,36 +172,6 @@ function clear() {
 
 	[...list.children].forEach(el => el.remove());
 }
-
-// fill list with random strings
-footerFillButton.addEventListener("click", _ => {
-	clear();
-
-	let total = 5;
-	let data = [];
-	for (let i = 0; i < total; i++) {
-		data[i] = { value: `${Math.random()}` };
-	}
-	data.push({ value: `---- `.repeat(140) });
-	storage.entries = data;
-
-	repopulate();
-	updateCounter();
-});
-
-// clear completed entries
-footerClearCompletedButton.addEventListener("click", _ => {
-	clearCompleted();
-
-	updateCounter();
-});
-
-// clear all entries
-footerClearButton.addEventListener("click", _ => {
-	clear();
-
-	updateCounter();
-});
 //#endregion
 
 function init() {

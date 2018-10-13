@@ -1,61 +1,58 @@
 import u from "./utility.js";
 import storage from "./storage.js";
 
+let draggedLi;
 let list = document.querySelector(".main__list");
 
-let draggedLi;
+list.addEventListener("dragstart", dragstart);
+list.addEventListener("dragenter", dragenter);
+list.addEventListener("dragover", dragover);
+list.addEventListener("dragleave", dragleave);
+list.addEventListener("dragend", dragend);
+list.addEventListener("drop", drop);
 
-list.addEventListener("dragstart", event => {
-	let target = event.target;
+function dragstart({ target, dataTransfer }) {
 	if (target.tagName != "LI") return;
-
-	target.classList.add("dragged", "dragged-over");
 
 	let img = u.constructBlankImg();
-	event.dataTransfer.setDragImage(img, 0, 0);
-
-	event.dataTransfer.setData("text/html", "");
-
+	dataTransfer.setDragImage(img, 0, 0);
+	dataTransfer.setData("text/html", "");
 	draggedLi = target;
-});
 
-list.addEventListener("dragenter", event => {
-	let target = event.target;
+	target.classList.add("dragged", "dragged-over");
+}
+
+function dragenter({ target }) {
 	if (target.tagName != "LI") return;
-
 	target.classList.add("dragged-over");
-});
-list.addEventListener("dragover", event => {
+}
+
+function dragover(event) {
 	let target = event.target;
 	if (target.tagName != "LI") return;
 
 	event.preventDefault();
-});
-list.addEventListener("dragleave", event => {
-	let target = event.target;
-	if (target.tagName != "LI") return;
+}
 
+function dragleave({ target }) {
+	if (target.tagName != "LI") return;
 	target.classList.remove("dragged-over");
-});
+}
 
-list.addEventListener("dragend", event => {
-	let target = event.target;
+function dragend({ target }) {
 	if (target.tagName != "LI") return;
-
 	target.classList.remove("dragged", "dragged-over");
-});
+}
 
-list.addEventListener("drop", event => {
-	let target = event.target;
+function drop({ target }) {
 	if (target.tagName != "LI") return;
-
 	target.classList.remove("dragged-over");
+
 	if (target === draggedLi) return;
 
 	let i = u.getChildIndex(target);
 	let j = u.getChildIndex(draggedLi);
-
 	storage.swap(i, j);
 
 	u.swapElements(draggedLi, target);
-});
+}
