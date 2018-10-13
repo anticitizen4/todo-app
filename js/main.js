@@ -4,7 +4,6 @@ import storage from "./storage.js";
 import "./dnd.js";
 
 let inputField = document.querySelector(".input__field");
-
 let list = document.querySelector(".main__list");
 
 let footerCounter = document.querySelector(".footer__counter");
@@ -24,11 +23,11 @@ function updateCounter() {
 	footerCounter.textContent = `items total: ${list.children.length}`;
 }
 
-// item add
+// list add
 //#region
-inputField.addEventListener("keypress", handleItemAdd);
+inputField.addEventListener("keypress", handleListAdd);
 
-function handleItemAdd(event) {
+function handleListAdd(event) {
 	if (event.key != "Enter") return;
 	addItem();
 }
@@ -113,25 +112,21 @@ function handleItemToggle({ target }) {
 	let li = target.parentElement.parentElement;
 	let index = u.getChildIndex(li);
 
-	if (target.checked) {
-		li.classList.add("completed");
-		storage.update(index, { completed: true });
-
-		return;
-	}
-	li.classList.remove("completed");
-	storage.update(index, { completed: false });
+	storage.update(index, { completed: target.checked });
+	target.checked
+		? li.classList.add("completed")
+		: li.classList.remove("completed");
 }
 
 //#endregion
 
 // list control
 //#region
-btnFill.addEventListener("click", handleFill);
-btnClearCompleted.addEventListener("click", handleClearCompleted);
-btnClear.addEventListener("click", handleClear);
+btnFill.addEventListener("click", handleListFill);
+btnClearCompleted.addEventListener("click", handleListClearCompleted);
+btnClear.addEventListener("click", handleListClear);
 
-function handleFill() {
+function handleListFill() {
 	clear();
 
 	let total = 5;
@@ -146,12 +141,12 @@ function handleFill() {
 	updateCounter();
 }
 
-function handleClearCompleted() {
+function handleListClearCompleted() {
 	clearCompleted();
 	updateCounter();
 }
 
-function handleClear() {
+function handleListClear() {
 	clear();
 	updateCounter();
 }
